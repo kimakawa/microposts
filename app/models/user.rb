@@ -37,4 +37,10 @@ class User < ActiveRecord::Base
   def following?(other_user)
     following_users.include?(other_user)
   end
+  
+  # user_idがフォローしているユーザーおよび自分に一致するつぶやきを取得
+  # following_user_idsはhas_many:following_usersで自動生成されたメソッド
+  def feed_items
+    Micropost.where(user_id: following_user_ids + [self.id])
+  end
 end
