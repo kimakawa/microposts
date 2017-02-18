@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
+  before_action :set_user, only: [:show, :edit, :update, :followings, :followers]
   before_action :correct_user, only: [:edit, :update]
   
   def show
-    @user = User.find(params[:id])
     @microposts = @user.microposts.order(created_at: :desc)
   end
   
@@ -33,6 +33,18 @@ class UsersController < ApplicationController
     end
   end
   
+  def followings
+    @title = "Followings"
+    @users = @user.following_users
+    render 'show_follow'
+  end
+  
+  def followers
+    @title = "Followers"
+    @users = @user.follower_users
+    render 'show_follow'
+  end
+  
   private
 
   def user_params
@@ -40,9 +52,11 @@ class UsersController < ApplicationController
                                  :password_confirmation)
   end
   
-  def correct_user
+  def set_user
     @user = User.find(params[:id])
-    redirect_to root_path if @user != current_user
   end
   
+  def correct_user
+    redirect_to root_path if @user != current_user
+  end
 end
